@@ -1,3 +1,4 @@
+import os
 import asyncio
 from dotenv import load_dotenv
 
@@ -5,6 +6,8 @@ from mcp_client import MCPClient
 
 
 load_dotenv()
+
+LETTA_API_KEY = os.getenv("LETTA_API_KEY")
 
 
 async def main():

@@ -13,13 +13,13 @@ class MCPClient:
         self._write_stream = None
 
     async def __aenter__(self):
-        await self.connect()
+        await self._connect()
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.disconnect()
+        await self._disconnect()
 
-    async def connect(self):
+    async def _connect(self):
         """Connect to the MCP server and return a session."""
         if self._session is not None:
             return self._session
@@ -33,7 +33,7 @@ class MCPClient:
         await self._session.initialize()
         return self._session
 
-    async def disconnect(self):
+    async def _disconnect(self):
         """Disconnect from the MCP server."""
         if self._session:
             await self._session.__aexit__(None, None, None)

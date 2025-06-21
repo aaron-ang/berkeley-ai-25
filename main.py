@@ -1,39 +1,27 @@
 import asyncio
-
-from mcp import ClientSession
-from mcp.client.streamable_http import streamablehttp_client
-
 from dotenv import load_dotenv
+
+from mcp_client import MCPClient
+
 
 load_dotenv()
 
 
-async def connect_to_server():
-    """Connect to an MCP server"""
-    async with streamablehttp_client("https://mcp.deepwiki.com/mcp") as (
-        read_stream,
-        write_stream,
-        _,
-    ):
-        async with ClientSession(read_stream, write_stream) as session:
-            await session.initialize()
-
-            # List available tools
-            response = await session.list_tools()
-            tools = response.tools
-            print("\nConnected to server  with tools:", [tool.name for tool in tools])
-
-            # Call a tool
-            tool = tools[1]  # Select the first tool
-            print(f"\nCalling tool: {tool}")
-            response = await session.call_tool(
-                tool.name, {"repoName": "microsoft/vscode"}
-            )
-            print(f"Tool response: {response}")
-
-
 async def main():
-    await connect_to_server()
+    async with MCPClient("https://mcp.deepwiki.com/mcp") as client:
+        tools = await client.list_tools()
+        print("\nConnected to server with tools:", tools)
+
+        # Call a tool
+        tool = tools[2]  # Select the first tool
+        response = await client.call_tool(
+            tool,
+            {
+                "repoName": "microsoft/vscode",
+                "question": "How do I build the project locally? ",
+            },
+        )
+        print(f"Tool response: {response}")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 import React from "react";
 import './issues.css';
 import Link from "next/link";
+import Editor from '@monaco-editor/react';
 
 export default function IssuesPage() {
     return (
@@ -78,7 +79,7 @@ export default function IssuesPage() {
                     top: '117px',
                     left: '13px',
                 }}>    </div>
-            
+
             <div className="left-inner-rectangle relative flex items-center"
                 style={{
                     top: '198px',
@@ -191,6 +192,36 @@ export default function IssuesPage() {
                     ./lorem/ipsum.json
                 </Link>
             </nav>
+
+            <div
+                className="absolute"
+                style={{
+                    top: '208px',
+                    left: '594px',
+                    width: '800px',
+                    height: '700px',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 4px 32px 0 rgba(0,0,0,0.10)',
+                    background: '#18181B',
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <Editor
+                    height="100%"
+                    defaultLanguage="typescript"
+                    defaultValue="if (true) "
+                    theme="vs-dark"
+                    options={{
+                        minimap: { enabled: false },
+                        fontSize: 16,
+                        fontFamily: 'Fira Mono, monospace',
+                        padding: { top: 16 },
+                        scrollbar: { vertical: 'auto' },
+                    }}
+                />
+            </div>
 
         </div>
     );

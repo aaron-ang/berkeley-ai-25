@@ -20,10 +20,24 @@ export interface KeySection {
 
 export interface FileInfo {
   type: 'file' | 'directory';
-  relevance_score?: number;
   reason?: string;
   key_sections?: KeySection[];
   files?: { [key: string]: FileInfo };
+}
+
+export interface ProjectContext {
+  overview: string;
+  architecture_overview: string;
+  main_directories: { [key: string]: string };
+}
+
+export interface BuildAndTest {
+  setup_commands: string[];
+  build_commands: string[];
+  test_commands: string[];
+  lint_commands: string[];
+  development_server?: string;
+  environment_requirements: string[];
 }
 
 export interface IssueSummary {
@@ -31,20 +45,24 @@ export interface IssueSummary {
   description: string;
   labels: string[];
   status: string;
-  assignees: string[];
 }
 
 export interface Analysis {
   problem_type: string;
   complexity: string;
-  suggested_approach: string;
+  affected_components: string[];
+  implementation_steps: string[];
   dependencies: string[];
   tests_needed: string[];
+  potential_risks: string[];
+  related_documentation: string[];
 }
 
 export interface GitHubIssueAnalysis {
   issue_summary: IssueSummary;
+  project_context: ProjectContext;
   relevant_files: { [key: string]: FileInfo };
+  build_and_test: BuildAndTest;
   analysis: Analysis;
 }
 

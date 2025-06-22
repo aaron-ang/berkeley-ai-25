@@ -32,7 +32,7 @@ def analyze_github_issue(request: GitHubIssueRequest):
     Analyze a GitHub issue URL and return structured analysis data.
 
     This endpoint processes a GitHub issue URL using Letta AI agents to extract:
-    - Issue summary (title, description, labels, status, assignees)
+    - Issue summary (title, description, labels, status)
     - Relevant files with directory structure and relevance scores
     - Technical analysis with problem type, complexity, and suggested approaches
 
@@ -45,10 +45,10 @@ def analyze_github_issue(request: GitHubIssueRequest):
     try:
         # For now, return mock data instead of calling the actual agent
         # TODO: Replace with actual agent call when ready
-        # issue_url = str(request.github_url)
-        # analysis_result = analyze_gh_issue(issue_url)
+        issue_url = str(request.github_url)
+        analysis_result = analyze_gh_issue(issue_url)
 
-        analysis_result = create_mock_analysis()
+        # analysis_result = create_mock_analysis()
         return analysis_result
 
     except ValueError as e:

@@ -212,37 +212,154 @@ export default function IssuesPage() {
 
             {/* Sidebar Content */}
             <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden flex flex-col">
-              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
                 {showSummary ? (
-                  <div className="text-white space-y-4">
+                  <div className="text-white space-y-6">
                     {analysis ? (
                       <>
+                        {/* Issue Summary */}
                         <div>
-                          <strong>Description:</strong>
-                          <p className="mt-2">{analysis.issue_summary.description}</p>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Issue Summary</h3>
+                          <div className="space-y-3">
+                            <div>
+                              <strong>Description:</strong>
+                              <p className="mt-1 text-gray-300">{analysis.issue_summary.description}</p>
+                            </div>
+                            <div className="flex flex-wrap gap-4">
+                              <div><strong>Status:</strong> <span className="text-green-400">{analysis.issue_summary.status}</span></div>
+                              <div><strong>Type:</strong> <span className="text-blue-400">{analysis.analysis.problem_type}</span></div>
+                              <div><strong>Complexity:</strong> <span className="text-yellow-400">{analysis.analysis.complexity}</span></div>
+                            </div>
+                            {analysis.issue_summary.labels.length > 0 && (
+                              <div>
+                                <strong>Labels:</strong>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {analysis.issue_summary.labels.map((label, index) => (
+                                    <span key={index} className="px-2 py-1 bg-purple-600/30 rounded text-xs">
+                                      {label}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Project Context */}
                         <div>
-                          <strong>Status:</strong> {analysis.issue_summary.status}
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Project Context</h3>
+                          <div className="space-y-3">
+                            <div>
+                              <strong>Overview:</strong>
+                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">{analysis.project_context.overview}</p>
+                            </div>
+                            <div>
+                              <strong>Architecture:</strong>
+                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">{analysis.project_context.architecture_overview}</p>
+                            </div>
+                            {Object.keys(analysis.project_context.main_directories).length > 0 && (
+                              <div>
+                                <strong>Key Directories:</strong>
+                                <div className="mt-1 space-y-1">
+                                  {Object.entries(analysis.project_context.main_directories).map(([dir, desc], index) => (
+                                    <div key={index} className="text-sm">
+                                      <code className="text-purple-300">{dir}</code> - <span className="text-gray-300">{desc}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Build & Development */}
                         <div>
-                          <strong>Labels:</strong> {analysis.issue_summary.labels.join(", ") || "None"}
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Build & Development</h3>
+                          <div className="space-y-3">
+                            {analysis.build_and_test.setup_commands.length > 0 && (
+                              <div>
+                                <strong>Setup Commands:</strong>
+                                <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs max-h-32 overflow-y-auto">
+                                  {analysis.build_and_test.setup_commands.map((cmd, index) => (
+                                    <div key={index} className="text-green-300 py-0.5">{cmd}</div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {analysis.build_and_test.test_commands.length > 0 && (
+                              <div>
+                                <strong>Test Commands:</strong>
+                                <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs max-h-32 overflow-y-auto">
+                                  {analysis.build_and_test.test_commands.map((cmd, index) => (
+                                    <div key={index} className="text-blue-300 py-0.5">{cmd}</div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {analysis.build_and_test.development_server && (
+                              <div>
+                                <strong>Dev Server:</strong>
+                                <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs">
+                                  <div className="text-yellow-300">{analysis.build_and_test.development_server}</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
+
+                        {/* Analysis & Implementation */}
                         <div>
-                          <strong>Assignees:</strong> {analysis.issue_summary.assignees.join(", ") || "None"}
-                        </div>
-                        <div>
-                          <strong>Problem Type:</strong> {analysis.analysis.problem_type}
-                        </div>
-                        <div>
-                          <strong>Complexity:</strong> {analysis.analysis.complexity}
-                        </div>
-                        <div>
-                          <strong>Suggested Approach:</strong>
-                          <p className="mt-2">{analysis.analysis.suggested_approach}</p>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Implementation Guide</h3>
+                          <div className="space-y-3">
+                            {analysis.analysis.implementation_steps.length > 0 && (
+                              <div>
+                                <strong>Implementation Steps:</strong>
+                                <ol className="mt-1 space-y-2 text-gray-300">
+                                  {analysis.analysis.implementation_steps.map((step, index) => (
+                                    <li key={index} className="text-sm leading-relaxed">
+                                      <span className="text-purple-300">{index + 1}.</span> {step}
+                                    </li>
+                                  ))}
+                                </ol>
+                              </div>
+                            )}
+                            {analysis.analysis.affected_components.length > 0 && (
+                              <div>
+                                <strong>Affected Components:</strong>
+                                <div className="flex flex-wrap gap-1 mt-1">
+                                  {analysis.analysis.affected_components.map((component, index) => (
+                                    <span key={index} className="px-2 py-1 bg-orange-600/30 rounded text-xs">
+                                      {component}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {analysis.analysis.tests_needed.length > 0 && (
+                              <div>
+                                <strong>Tests Needed:</strong>
+                                <ul className="mt-1 space-y-1 text-gray-300">
+                                  {analysis.analysis.tests_needed.map((test, index) => (
+                                    <li key={index} className="text-sm leading-relaxed">• {test}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {analysis.analysis.potential_risks && analysis.analysis.potential_risks.length > 0 && (
+                              <div>
+                                <strong>Potential Risks:</strong>
+                                <ul className="mt-1 space-y-1 text-red-300">
+                                  {analysis.analysis.potential_risks.map((risk, index) => (
+                                    <li key={index} className="text-sm leading-relaxed">⚠️ {risk}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </>
                     ) : (
-                      "Loading analysis..."
+                      <div className="text-center text-gray-300">Loading analysis...</div>
                     )}
                   </div>
                 ) : (
@@ -262,10 +379,10 @@ export default function IssuesPage() {
                                 }`}
                               onClick={() => setSelectedFile(file)}
                             >
-                              <div className="font-mono text-sm mb-2">
+                              <div className="font-mono text-sm mb-2 break-all">
                                 {file.pathName}
                               </div>
-                              <div className="text-xs opacity-80">
+                              <div className="text-xs opacity-80 leading-relaxed">
                                 {file.reason}
                               </div>
                               {file.keySections && file.keySections.length > 0 && (
@@ -278,7 +395,7 @@ export default function IssuesPage() {
                         </div>
                       </div>
                     ) : (
-                      "Loading files..."
+                      <div className="text-center text-gray-300">Loading files...</div>
                     )}
                   </div>
                 )}

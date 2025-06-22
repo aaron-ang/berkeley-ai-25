@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from dotenv import load_dotenv
 
 from letta_client import Letta, CreateBlock, MessageCreate
@@ -17,52 +18,58 @@ output_schema = GitHubIssueAnalysis.model_json_schema()
 output_schema["$schema"] = GenerateJsonSchema.schema_dialect
 
 
-SUPERVISOR_PERSONA = f"""You are a GitHub Issue Analysis Coordinator specializing in task delegation and result synthesis.
+SUPERVISOR_PERSONA = f"""You are a GitHub Issue Analysis Coordinator for developers new to repositories.
 
-Your primary responsibilities:
-- Coordinate analysis of GitHub issues to produce structured JSON output
-- Delegate specific tasks to the worker agents (using the `worker` tag) for detailed technical investigation
-- Synthesize worker findings into a final structured response
-- Ensure comprehensive coverage of all relevant files and code sections
+Responsibilities:
+- Delegate tasks to workers (use `worker` tag) for technical investigation
+- Synthesize findings into structured JSON for new contributors
+- Ensure comprehensive context about project architecture and setup
 
-For each GitHub issue analysis, you must:
-1. First, delegate to the workers to fetch and analyze the GitHub issue details
-2. Based on initial findings, delegate further investigation of relevant repositories, files, and code
-3. Compile a final JSON response that matches the required schema
+Process:
+1. Delegate issue details analysis to workers
+2. Delegate repository structure and code investigation 
+3. Ensure workers provide project overview and build instructions
+4. Compile final JSON response matching the schema
 
-The response must include:
-- issue_summary: Complete issue details (title, description, labels, status, assignees)
-- relevant_files: Directory structure with files, relevance scores, and key code sections
-- analysis: Problem type, complexity, approach, dependencies, and test scenarios
+Required output includes:
+- Complete issue details and project context
+- File structure with architecture explanations and relevance scores
+- Build/test commands and implementation guidance
 
-Only return valid JSON that matches the expected schema:
+Make analysis accessible to developers unfamiliar with the codebase.
+
+Only return valid JSON matching this schema:
 {output_schema}
 """
 
-WORKER_PERSONA = """You are a GitHub Technical Analysis Specialist responsible for detailed investigation and data extraction.
+WORKER_PERSONA = """You are a GitHub Technical Analysis Specialist for new repository contributors.
 
-Your core functions:
-- Fetch and analyze GitHub issues, pull requests, and repository contents
-- Extract relevant source code sections with precise line numbers
-- Identify file dependencies and relationships
-- Provide technical insights about code structure and changes
-- Support the supervisor with detailed findings for JSON compilation
+Core tasks:
+- Fetch GitHub issues, repository contents, and code sections
+- Extract code with line numbers and architectural context
+- Document build processes, testing, and development setup
+- Explain how files relate to overall project structure
 
-When analyzing GitHub issues:
-1. First fetch the issue details (title, description, labels, status, assignees)
-2. Identify the repository and relevant directories/files mentioned
-3. Examine source code files to find relevant sections
-4. For each relevant file, extract:
-   - Key code sections with line numbers
-   - Explanations of why these sections are relevant
-   - Relevance scores (0.0-1.0 based on importance to the issue)
-5. Identify file types (file vs directory) and build directory structure
-6. Analyze the problem type and complexity
-7. Suggest approaches and identify dependencies
+Analysis workflow:
+1. Get issue details (title, description, labels, status)
+2. Explore repository structure and technology stack
+3. Examine build files (package.json, requirements.txt, etc.) and docs
+4. Find relevant code sections with precise line numbers
+5. For each file, provide:
+   - Role in project architecture
+   - Dependencies and relationships
+   - Key code sections with context
+6. Document setup/build/test commands and environment requirements
+7. Analyze problem complexity and suggest implementation approach
 
-Be thorough and precise with line numbers, file paths, and code content.
-Always cite specific commits, files, and line ranges when providing analysis.
-Focus on actionable insights that help resolve the issue."""
+Always include for new contributors:
+- Project overview and architecture explanation
+- Setup and testing instructions
+- Code organization and component relationships
+- Technology stack and development workflow
+
+Be precise with file paths, line numbers, and technical explanations.
+Focus on actionable insights and educational context."""
 
 GH_TOOL_PREFIXES = [
     "get_commit",
@@ -131,12 +138,16 @@ def analyze_gh_issue(issue_url: str):
     # Create supervisor agent - coordinates and synthesizes
     supervisor = letta_client.agents.create(
         name="github-issue-supervisor",
-        memory_blocks=[CreateBlock(label="persona", value=SUPERVISOR_PERSONA)],
+        memory_blocks=[
+            CreateBlock(label="persona", value=SUPERVISOR_PERSONA, limit=7000)
+        ],
         tools=["send_message_to_agents_matching_tags"],
         tool_ids=mcp_tool_ids,
         block_ids=[shared_block.id],
-        model="anthropic/claude-opus-4-20250514",
+        model="anthropic/claude-sonnet-4-20250514",
         embedding="openai/text-embedding-3-small",
+        context_window_limit=32000,  # limit context window to improve latency
+        # TODO: Use json_schema when schema is ready
         # response_format={"type": "json_schema", "json_schema": output_schema},
     )
     print(f"Created supervisor agent: {supervisor.id}")
@@ -157,24 +168,25 @@ def analyze_gh_issue(issue_url: str):
     # Start the analysis with supervisor
     print(f"Starting analysis of: {issue_url}")
 
-    response = letta_client.agents.messages.create(
+    run = letta_client.agents.messages.create_async(
         agent_id=supervisor.id,
         messages=[
             MessageCreate(
                 role="user",
-                content=f"""Please analyze this GitHub issue and provide a comprehensive JSON response: {issue_url}
-I need structured data including:
-1. Issue summary (title, description, labels, status, assignees)
-2. Relevant files with directory structure, relevance scores, and key code sections with line numbers
-3. Analysis of problem type, complexity, suggested approach, dependencies, and test scenarios
-Coordinate with the worker agent to gather detailed technical information, then compile everything into the required JSON format. The response must be valid JSON that matches the given schema.""",
+                content=f"Please analyze this GitHub issue and provide a comprehensive JSON response: {issue_url}",
             )
         ],
     )
 
+    run = letta_client.runs.retrieve(run.id)
+    while run.status not in ["completed", "failed"]:
+        time.sleep(5)
+        run = letta_client.runs.retrieve(run.id)
+
     # Extract the final JSON response
     analysis_result = None
-    for message in response.messages:
+    messages = letta_client.runs.messages.list(run.id)
+    for message in messages:
         if message.message_type == "assistant_message":
             print(f"Supervisor response: {message.content}")
             try:

@@ -5,6 +5,23 @@ from mcp.client.streamable_http import streamablehttp_client
 
 
 class MCPClient:
+    """Example usage:
+    ```async with MCPClient("https://mcp.deepwiki.com/mcp") as mcp_client:
+    tools = await mcp_client.list_tools()
+    print("\nConnected to server with tools:", tools)
+
+    tool = tools[2]  # Select the first tool
+    response = await mcp_client.call_tool(
+        tool,
+        {
+            "repoName": "microsoft/vscode",
+            "question": "How do I build the project locally? ",
+        },
+    )
+    pprint(f"Tool response: {response}")
+    ```
+    """
+
     def __init__(self, server_url):
         self.server_url = server_url
         self._connection = None

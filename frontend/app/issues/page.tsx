@@ -193,8 +193,9 @@ export default function IssuesPage() {
                 }}>    </div>
             <div className="right-inner-rectangle relative flex items-center"
                 style={{
-                    top: '198px',
+                    top: '200px',
                     left: '564px',
+                    zIndex: 1
                 }}>    </div>
             {/* File logo (toggle summary) */}
             <div
@@ -239,7 +240,7 @@ export default function IssuesPage() {
                 style={{
                     width: '404px',
                     height: '52px',
-                    top: '136px',
+                    top: '143px',
                     left: '586px',
                     borderWidth: '1px',
                     borderStyle: 'solid',
@@ -268,11 +269,45 @@ export default function IssuesPage() {
                     ./lorem/ipsum.json
                 </Link>
             </nav>
-
+            <div
+                className="absolute flex items-start justify-start"
+                style={{
+                    width: '852px',
+                    height: '160px',
+                    top: '188px',
+                    left: '565px',
+                    fontFamily: 'Montserrat, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    lineHeight: '28px',
+                    letterSpacing: '0%',
+                    background: 'transparent',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow: 'none',
+                    borderRadius: '16px',
+                    padding: '32px'
+                }}
+            >
+                <span
+                    style={{
+                        color: '#ffffff',
+                        display: 'block',
+                        maxHeight: '100px',
+                        overflowY: 'auto',
+                        width: '100%',
+                        paddingRight: '8px',
+                        zIndex: 99, // Increase zIndex to be above right-inner-rectangle (which is zIndex: 1)
+                        position: 'relative', // Ensure zIndex is applied
+                    }}
+                >
+                    {/* Your text goes here */}
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                </span>
+            </div>
             <div
                 className="absolute"
                 style={{
-                    top: '199px',
+                    top: '310px',
                     left: '565px',
                     width: '850px',
                     height: '646px',
@@ -282,6 +317,7 @@ export default function IssuesPage() {
                     background: '#18181B',
                     display: 'flex',
                     flexDirection: 'column',
+                    zIndex: 10
                 }}
             >
                 <Editor

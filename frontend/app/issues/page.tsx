@@ -24,20 +24,20 @@ export default function IssuesPage() {
     };
     return (
         <div className="relative min-h-screen">
-  {/* Black background layer (100% opacity) */}
-  <div className="absolute inset-0 bg-black z-0" />
+            {/* Black background layer (100% opacity) */}
+            <div className="absolute inset-0 bg-black z-0" />
 
-  {/* Background image layer (90% opacity) */}
-  <div
-    className="absolute inset-0 z-9"
-    style={{
-      backgroundImage: 'url("/purpleBackground2.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      opacity: 0.9,
-    }}
-  />
+            {/* Background image layer (90% opacity) */}
+            <div
+                className="absolute inset-0 z-9"
+                style={{
+                    backgroundImage: 'url("/purpleBackground2.png")',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    opacity: 0.9,
+                }}
+            />
             {/* Navigation */}
             <nav className="absolute top-0 left-0 right-0 p-6 z-10">
                 <div className="flex justify-between items-center">
@@ -122,7 +122,7 @@ export default function IssuesPage() {
                     className="absolute flex items-start justify-start"
                     style={{
                         width: '498px',
-                        height: '781px',
+                        height: '646px',
                         top: '218px',
                         left: '33px',
                         fontFamily: 'Montserrat, sans-serif',
@@ -137,10 +137,18 @@ export default function IssuesPage() {
                         padding: '32px'
                     }}
                 >
-                    <span style={{ color: '#fff' }}>
+                    <span
+                        style={{
+                            color: '#fff',
+                            display: 'block',
+                            maxHeight: '646px',
+                            overflowY: 'auto',
+                            width: '100%',
+                            paddingRight: '8px',
+                        }}
+                    >
                         {/* Your text goes here */}
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam massa nisl quis neque.
-                    </span>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.                    </span>
                 </div>
             )}
 
@@ -150,7 +158,7 @@ export default function IssuesPage() {
                     className="absolute flex items-start justify-start"
                     style={{
                         width: '498px',
-                        height: '781px',
+                        height: '646px',
                         top: '218px',
                         left: '33px',
                         fontFamily: 'Montserrat, sans-serif',
@@ -165,7 +173,14 @@ export default function IssuesPage() {
                         padding: '32px'
                     }}
                 >
-                    <span style={{ color: '#fff' }}>
+                    <span style={{
+                        color: '#fff',
+                        display: 'block',
+                        maxHeight: '646px',
+                        overflowY: 'auto',
+                        width: '100%',
+                        paddingRight: '8px',
+                    }}>
                         {/* Your text goes here */}
                         Files Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam massa nisl quis neque.
                     </span>
@@ -260,7 +275,7 @@ export default function IssuesPage() {
                     top: '199px',
                     left: '565px',
                     width: '850px',
-                    height: '806px',
+                    height: '646px',
                     borderRadius: '16px',
                     overflow: 'hidden',
                     boxShadow: '0 4px 32px 0 rgba(0,0,0,0.10)',

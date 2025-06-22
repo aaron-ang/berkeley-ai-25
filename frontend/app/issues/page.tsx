@@ -64,7 +64,7 @@ export default function IssuesPage() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative max-h-screen">
       {/* Background layers */}
       <div className="absolute inset-0 bg-black z-0" />
       <div
@@ -79,7 +79,7 @@ export default function IssuesPage() {
       />
 
       {/* Main Content Grid */}
-      <div className="relative z-10 h-screen grid grid-rows-[auto_1fr] gap-4 p-4">
+      <div className="relative z-10 max-h-full grid grid-rows-[auto_1fr] gap-4 p-4">
         {/* Header */}
         <header className="grid grid-cols-3 items-center gap-4">
           {/* Logo */}
@@ -107,7 +107,7 @@ export default function IssuesPage() {
         </header>
 
         {/* Main Content */}
-        <main className="grid grid-cols-[500px_1fr] gap-6 h-full">
+        <main className="grid grid-cols-[500px_1fr] gap-6 h-full overflow-hidden">
           {/* Left Sidebar */}
           <div className="flex flex-col gap-4">
             {/* Toggle Buttons */}
@@ -142,8 +142,8 @@ export default function IssuesPage() {
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden">
-              <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent max-h-screen">
+              <div className="flex-1 min-h-0 pr-2">
                 {showSummary ? (
                   <div className="text-white space-y-6">
                     {analysis ? (

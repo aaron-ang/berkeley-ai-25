@@ -23,13 +23,21 @@ export default function IssuesPage() {
         ]);
     };
     return (
-        <div
-            className="min-h-screen relative"
-            style={{
-                background: 'radial-gradient(ellipse at center, #6B46C1 0%, #3B82F6 100%)',
-                backgroundSize: '100% 100%'
-            }}
-        >
+        <div className="relative min-h-screen">
+  {/* Black background layer (100% opacity) */}
+  <div className="absolute inset-0 bg-black z-0" />
+
+  {/* Background image layer (90% opacity) */}
+  <div
+    className="absolute inset-0 z-9"
+    style={{
+      backgroundImage: 'url("/purpleBackground.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      opacity: 0.9,
+    }}
+  />
             {/* Navigation */}
             <nav className="absolute top-0 left-0 right-0 p-6 z-10">
                 <div className="flex justify-between items-center">

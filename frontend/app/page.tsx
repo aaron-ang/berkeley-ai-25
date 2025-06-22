@@ -2,29 +2,21 @@
 
 export default function Home() {
   return (
-    <div 
-      className="min-h-screen relative z-10"
-      style={{
-          backgroundImage: 'url("/purpleBackground.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-      }}
-    >
-    
-    <div
-      className="absolute inset-0"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-      }}
-    />
+  <div className="relative min-h-screen">
+  {/* Black background layer (100% opacity) */}
+  <div className="absolute inset-0 bg-black z-0" />
 
-      {/* Navigation */}
-      <nav className="absolute top-0 left-0 right-0 p-6 z-10">
-        <div className="flex justify-between items-center">
-          <h1 className="text-white text-lg font-medium">Landing Page</h1>
-        </div>
-      </nav>
+  {/* Background image layer (90% opacity) */}
+  <div
+    className="absolute inset-0 z-9"
+    style={{
+      backgroundImage: 'url("/purpleBackground.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      opacity: 0.9,
+    }}
+  />
 
       {/* Main Content */}
       <main className="flex flex-col items-center justify-center min-h-screen px-6 text-center">

@@ -105,5 +105,3 @@ export async function analyzeGitHubIssue(githubUrl: string): Promise<{
     throw new Error(`Unexpected error: ${error}`);
   }
 }
-
-export default api;

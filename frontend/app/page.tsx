@@ -1,39 +1,28 @@
-
 'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { analyzeGitHubIssue, FlattenedFile, GitHubIssueAnalysis } from '../lib/api';
 
 export default function Home() {
   const router = useRouter();
   const [githubUrl, setGithubUrl] = useState('');
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!githubUrl.trim()) {
       setError('Please enter a GitHub issue URL');
       return;
     }
 
-    setLoading(true);
     setError(null);
 
-    try {
-      const result = await analyzeGitHubIssue(githubUrl);
-      
-      // Store the analysis data in localStorage for the issues page
-      localStorage.setItem('githubAnalysis', JSON.stringify(result));
-      
-      // Redirect to issues page
-      router.push('/issues');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-      setLoading(false);
-    }
+    // Store the URL
+    localStorage.setItem('pendingGithubUrl', githubUrl);
+    // Small delay to ensure localStorage is set
+    await new Promise(resolve => setTimeout(resolve, 50));
+    router.push('/issues');
   };
 
   return (
@@ -70,21 +59,28 @@ export default function Home() {
           Analyze GitHub issues with AI-powered insights. Paste a GitHub issue URL below to get detailed analysis and relevant files.
         </p>
 
+        {/* Error Display */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-200 relative z-10">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+
         {/* Search Input with exact specifications */}
         <form onSubmit={handleSubmit} className="relative mb-10">
           <div className="glass-search relative flex items-center">
             <div className="absolute left-6 flex items-center pointer-events-none z-10">
-              <svg 
-                className="w-6 h-6 text-gray-300" 
-                fill="none" 
-                stroke="currentColor" 
+              <svg
+                className="w-6 h-6 text-gray-300"
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
             </div>
@@ -95,24 +91,15 @@ export default function Home() {
               placeholder="Paste your GitHub issue URL here"
               className="w-full h-full pl-16 pr-6 text-white placeholder-gray-300 bg-transparent border-none outline-none relative z-10"
               style={{ fontSize: '18px' }}
-              disabled={loading}
             />
           </div>
           <button
             type="submit"
-            disabled={loading}
             className="mt-4 px-8 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-full transition-colors duration-200"
           >
-            {loading ? 'Analyzing...' : 'Analyze Issue'}
+            Analyze Issue
           </button>
         </form>
-
-        {/* Error Display */}
-        {error && (
-          <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-200">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
 
       </main>
     </div>

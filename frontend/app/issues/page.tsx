@@ -128,7 +128,7 @@ export default function IssuesPage() {
           {/* Logo */}
           <div className="flex justify-start">
             <Link href="/" className="glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center">
-              {/* Logo content */}
+              <img src="/logo.png" alt="Logo" />
             </Link>
           </div>
 

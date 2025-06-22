@@ -1,22 +1,57 @@
 
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { analyzeGitHubIssue, FlattenedFile, GitHubIssueAnalysis } from '../lib/api';
 
 export default function Home() {
-  return (
-  <div className="relative min-h-screen">
-  {/* Black background layer (100% opacity) */}
-  <div className="absolute inset-0 bg-black z-0" />
+  const router = useRouter();
+  const [githubUrl, setGithubUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  {/* Background image layer (90% opacity) */}
-  <div
-    className="absolute inset-0 z-9"
-    style={{
-      backgroundImage: 'url("/purpleBackground.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-      opacity: 0.9,
-    }}
-  />
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!githubUrl.trim()) {
+      setError('Please enter a GitHub issue URL');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await analyzeGitHubIssue(githubUrl);
+      
+      // Store the analysis data in localStorage for the issues page
+      localStorage.setItem('githubAnalysis', JSON.stringify(result));
+      
+      // Redirect to issues page
+      router.push('/issues');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="relative min-h-screen">
+      {/* Black background layer (100% opacity) */}
+      <div className="absolute inset-0 bg-black z-0" />
+
+      {/* Background image layer (90% opacity) */}
+      <div
+        className="absolute inset-0 z-9"
+        style={{
+          backgroundImage: 'url("/purpleBackground.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.9,
+        }}
+      />
 
       {/* Main Content */}
       <main className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
@@ -25,22 +60,19 @@ export default function Home() {
           <div className="glass-circle relative flex items-center justify-center">
             {/* Logo placeholder - easy to replace with an image */}
             <div className="logo-container flex items-center justify-center w-full h-full">
-                  <img src="/logo.png" alt="Logo" className="w-auto h-auto max-w-[80%] max-h-[80%] object-contain" />
-              
+              <img src="/logo.png" alt="Logo" className="w-auto h-auto max-w-[80%] max-h-[80%] object-contain" />
             </div>
           </div>
         </div>
 
         {/* Description Text */}
         <p className="text-white/80 text-lg leading-relaxed max-w-4xl mb-10 font-light z-10">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          Analyze GitHub issues with AI-powered insights. Paste a GitHub issue URL below to get detailed analysis and relevant files.
         </p>
 
         {/* Search Input with exact specifications */}
-        <div className="relative">
-          <div className="glass-search relative flex items-center mb-10">
+        <form onSubmit={handleSubmit} className="relative mb-10">
+          <div className="glass-search relative flex items-center">
             <div className="absolute left-6 flex items-center pointer-events-none z-10">
               <svg 
                 className="w-6 h-6 text-gray-300" 
@@ -58,13 +90,31 @@ export default function Home() {
             </div>
             <input
               type="text"
-              placeholder="Paste your issue link here"
+              value={githubUrl}
+              onChange={(e) => setGithubUrl(e.target.value)}
+              placeholder="Paste your GitHub issue URL here"
               className="w-full h-full pl-16 pr-6 text-white placeholder-gray-300 bg-transparent border-none outline-none relative z-10"
               style={{ fontSize: '18px' }}
+              disabled={loading}
             />
           </div>
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-4 px-8 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-full transition-colors duration-200"
+          >
+            {loading ? 'Analyzing...' : 'Analyze Issue'}
+          </button>
+        </form>
+
+        {/* Error Display */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-200">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+
       </main>
     </div>
-  )
+  );
 }

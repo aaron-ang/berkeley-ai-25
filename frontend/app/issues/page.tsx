@@ -1,13 +1,30 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import './issues.css';
 import Link from "next/link";
 import Editor, { OnMount } from '@monaco-editor/react';
-import { useRef } from 'react';
+import { GitHubIssueAnalysis, FlattenedFile } from '../../lib/api';
+import * as monaco from 'monaco-editor';
 
 export default function IssuesPage() {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const [showSummary, setShowSummary] = React.useState(true);
+    const [showSummary, setShowSummary] = useState(true);
+    const [analysis, setAnalysis] = useState<GitHubIssueAnalysis | null>(null);
+    const [flattenedFiles, setFlattenedFiles] = useState<FlattenedFile[]>([]);
+    const [selectedFile, setSelectedFile] = useState<FlattenedFile | null>(null);
+
+    useEffect(() => {
+        // Load analysis data from localStorage
+        const storedAnalysis = localStorage.getItem('githubAnalysis');
+        if (storedAnalysis) {
+            const data = JSON.parse(storedAnalysis);
+            setAnalysis(data.analysis);
+            setFlattenedFiles(data.flattenedFiles);
+            if (data.flattenedFiles.length > 0) {
+                setSelectedFile(data.flattenedFiles[0]); // Select first file by default
+            }
+        }
+    }, []);
     const handleEditorMount: OnMount = (editor, monaco) => {
         editorRef.current = editor;
 
@@ -41,21 +58,18 @@ export default function IssuesPage() {
             {/* Navigation */}
             <nav className="absolute top-0 left-0 right-0 p-6 z-10">
                 <div className="flex justify-between items-center">
-                    {/*change link later*/}
-                    <Link href="/issues/issue-name" style={{ textDecoration: 'none' }}>
-                        <h1
-                            className="text-white"
-                            style={{
-                                fontFamily: 'Montserrat, sans-serif',
-                                fontWeight: 400,
-                                fontSize: '60px',
-                                lineHeight: '100%',
-                                letterSpacing: '0%',
-                            }}
-                        >
-                            Issue Name
-                        </h1>
-                    </Link>
+                    <h1
+                        className="text-white"
+                        style={{
+                            fontFamily: 'Montserrat, sans-serif',
+                            fontWeight: 400,
+                            fontSize: '60px',
+                            lineHeight: '100%',
+                            letterSpacing: '0%',
+                        }}
+                    >
+                        {analysis?.issue_summary.title || "Loading..."}
+                    </h1>
                 </div>
             </nav>
 
@@ -147,8 +161,37 @@ export default function IssuesPage() {
                             paddingRight: '8px',
                         }}
                     >
-                        {/* Your text goes here */}
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.                    </span>
+                        {/* Issue Summary */}
+                        {analysis ? (
+                            <>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Description:</strong><br />
+                                    {analysis.issue_summary.description}
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Status:</strong> {analysis.issue_summary.status}
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Labels:</strong> {analysis.issue_summary.labels.join(', ') || 'None'}
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Assignees:</strong> {analysis.issue_summary.assignees.join(', ') || 'None'}
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Problem Type:</strong> {analysis.analysis.problem_type}
+                                </div>
+                                <div style={{ marginBottom: '16px' }}>
+                                    <strong>Complexity:</strong> {analysis.analysis.complexity}
+                                </div>
+                                <div>
+                                    <strong>Suggested Approach:</strong><br />
+                                    {analysis.analysis.suggested_approach}
+                                </div>
+                            </>
+                        ) : (
+                            'Loading analysis...'
+                        )}
+                    </span>
                 </div>
             )}
 
@@ -181,8 +224,42 @@ export default function IssuesPage() {
                         width: '100%',
                         paddingRight: '8px',
                     }}>
-                        {/* Your text goes here */}
-                        Files Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam massa nisl quis neque.
+                        {/* Files List */}
+                        {flattenedFiles.length > 0 ? (
+                            <div>
+                                <strong>Relevant Files ({flattenedFiles.length}):</strong>
+                                <div style={{ marginTop: '16px' }}>
+                                    {flattenedFiles.map((file, index) => (
+                                        <div 
+                                            key={index} 
+                                            style={{ 
+                                                marginBottom: '12px', 
+                                                padding: '8px',
+                                                backgroundColor: selectedFile === file ? 'rgba(255,255,255,0.1)' : 'transparent',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                borderLeft: '3px solid #8B5CF6'
+                                            }}
+                                            onClick={() => setSelectedFile(file)}
+                                        >
+                                            <div style={{ fontFamily: 'monospace', fontSize: '14px', marginBottom: '4px' }}>
+                                                {file.pathName}
+                                            </div>
+                                            <div style={{ fontSize: '12px', opacity: 0.8 }}>
+                                                {file.reason}
+                                            </div>
+                                            {file.keySections && file.keySections.length > 0 && (
+                                                <div style={{ fontSize: '10px', opacity: 0.6, marginTop: '4px' }}>
+                                                    {file.keySections.length} key section(s)
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            'Loading files...'
+                        )}
                     </span>
                 </div>
             )}
@@ -254,8 +331,7 @@ export default function IssuesPage() {
                     color: '#fff', // changed to white
                 }}
             >
-                <Link
-                    href="/lorem/ipsum.json"
+                <div
                     style={{
                         width: '100%',
                         height: '100%',
@@ -263,11 +339,11 @@ export default function IssuesPage() {
                         alignItems: 'center',
                         justifyContent: 'center',
                         textDecoration: 'none',
-                        color: '#fff', // changed to white
+                        color: '#fff',
                     }}
                 >
-                    ./lorem/ipsum.json
-                </Link>
+                    {selectedFile?.pathName || './select/a/file.js'}
+                </div>
             </nav>
             <div
                 className="absolute flex items-start justify-start"
@@ -322,13 +398,23 @@ export default function IssuesPage() {
             >
                 <Editor
                     height="90vh"
-                    defaultLanguage="typescript" //change based on what the file type is 
-                    defaultValue={`function greet(name: string) {\n  const msg = "Hello " + name;\n  return msg;\n}\n\ngreet("world");`}
+                    language={selectedFile?.pathName.split('.').pop() === 'ts' ? 'typescript' : 
+                             selectedFile?.pathName.split('.').pop() === 'js' ? 'javascript' :
+                             selectedFile?.pathName.split('.').pop() === 'py' ? 'python' :
+                             selectedFile?.pathName.split('.').pop() === 'rs' ? 'rust' :
+                             selectedFile?.pathName.split('.').pop() === 'json' ? 'json' : 'text'}
+                    value={selectedFile?.keySections && selectedFile.keySections.length > 0 ? 
+                           selectedFile.keySections.map(section => 
+                               `// Lines ${section.line_start}-${section.line_end}: ${section.explanation}\n${section.code}`
+                           ).join('\n\n') : 
+                           selectedFile ? `// ${selectedFile.reason}\n\n// Code content not available for this file` :
+                           `// Select a file from the files panel to view its content\n// No files loaded yet`}
                     theme="vs-dark"
                     onMount={handleEditorMount}
                     options={{
                         lineNumbers: 'on',
                         minimap: { enabled: false },
+                        readOnly: true,
                     }}
                 />
                 <style jsx global>{`

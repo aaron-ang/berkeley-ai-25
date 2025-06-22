@@ -44,3 +44,20 @@ Thumbs.db
 *.tmp
 *.temp
 .cache/
+
+# Lock files (keep package-lock.json but ignore yarn.lock if using npm)
+yarn.lock
+pnpm-lock.yaml
+
+# Build tools
+.turbo/
+.webpack/
+
+# Testing
+.jest/
+test-results/
+playwright-report/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

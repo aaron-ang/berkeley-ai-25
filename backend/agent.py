@@ -124,7 +124,7 @@ def analyze_gh_issue(issue_url: str):
 
     # Add MCP tools
     mcp_tool_ids = []
-    mcp_tool_ids.extend(add_mcp_tools(letta_client, "deepwiki"))
+    # mcp_tool_ids.extend(add_mcp_tools(letta_client, "deepwiki"))
     mcp_tool_ids.extend(add_mcp_tools(letta_client, "github"))
 
     # Create shared r/w memory block with analysis context

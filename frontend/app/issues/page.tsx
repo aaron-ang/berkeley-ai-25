@@ -79,7 +79,7 @@ export default function IssuesPage() {
       />
 
       {/* Main Content Grid */}
-      <div className="relative z-10 max-h-full grid grid-rows-[auto_1fr] gap-4 p-4">
+        <div className="relative z-10 max-h-screen flex flex-col p-4 min-h-screen">
         {/* Header */}
         <header className="grid grid-cols-3 items-center gap-4">
           {/* Logo */}
@@ -107,9 +107,9 @@ export default function IssuesPage() {
         </header>
 
         {/* Main Content */}
-        <main className="grid grid-cols-[500px_1fr] gap-6 h-full overflow-hidden">
+        <main className="grid grid-cols-[500px_1fr] gap-6 flex-1 overflow-hidden min-h-0">
           {/* Left Sidebar */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 min-h-0">
             {/* Toggle Buttons */}
             <div className="flex gap-4">
               <button
@@ -142,7 +142,7 @@ export default function IssuesPage() {
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent max-h-screen">
+            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent max-h-screen">
               <div className="flex-1 min-h-0 pr-2">
                 {showSummary ? (
                   <div className="text-white space-y-6">
@@ -338,9 +338,10 @@ export default function IssuesPage() {
           <div className="flex flex-col gap-4">
             {/* File Name Header */}
             <div className="glass-panel rounded-2xl p-4 text-center">
-              <h2 className="text-white text-2xl font-mono">
+              <h2 className="text-white text-2xl font-mono break-all truncate md:break-words text-left overflow-hidden">
                 {selectedFile?.pathName || "Select a file"}
               </h2>
+
             </div>
 
             {/* Code Editor */}

@@ -14,5 +14,5 @@ uv remove <package>
 ## Run the project
 
 ```sh
-uv run main.py
+uv run fastapi dev
 ```

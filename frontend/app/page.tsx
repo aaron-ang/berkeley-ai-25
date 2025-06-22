@@ -1,12 +1,24 @@
+
+
 export default function Home() {
   return (
     <div 
-      className="min-h-screen relative"
+      className="min-h-screen relative z-10"
       style={{
-        background: 'radial-gradient(ellipse at center, #6B46C1 0%, #3B82F6 100%)',
-        backgroundSize: '100% 100%'
+          backgroundImage: 'url("/purpleBackground.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
       }}
     >
+    
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+      }}
+    />
+
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 p-6 z-10">
         <div className="flex justify-between items-center">
@@ -17,7 +29,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
         {/* Logo Circle with exact specifications */}
-        <div className="relative mb-16">
+        <div className="relative mb-10">
           <div className="glass-circle relative flex items-center justify-center">
             {/* Logo placeholder - easy to replace with an image */}
             <div className="logo-container flex items-center justify-center w-full h-full">
@@ -30,7 +42,7 @@ export default function Home() {
         </div>
 
         {/* Description Text */}
-        <p className="text-white/80 text-lg leading-relaxed max-w-4xl mb-16 font-light">
+        <p className="text-white/80 text-lg leading-relaxed max-w-4xl mb-10 font-light z-10">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
           ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
           ullamco laboris nisi ut aliquip ex ea commodo consequat.
@@ -38,7 +50,7 @@ export default function Home() {
 
         {/* Search Input with exact specifications */}
         <div className="relative">
-          <div className="glass-search relative flex items-center">
+          <div className="glass-search relative flex items-center mb-10">
             <div className="absolute left-6 flex items-center pointer-events-none z-10">
               <svg 
                 className="w-6 h-6 text-gray-300" 
@@ -58,7 +70,7 @@ export default function Home() {
               type="text"
               placeholder="Paste your issue link here"
               className="w-full h-full pl-16 pr-6 text-white placeholder-gray-300 bg-transparent border-none outline-none relative z-10"
-              style={{ fontSize: '16px' }}
+              style={{ fontSize: '18px' }}
             />
           </div>
         </div>

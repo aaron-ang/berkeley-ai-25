@@ -25,10 +25,8 @@ export default function Home() {
           <div className="glass-circle relative flex items-center justify-center">
             {/* Logo placeholder - easy to replace with an image */}
             <div className="logo-container flex items-center justify-center w-full h-full">
-              <span className="text-white text-2xl font-light">logo goes here</span>
-              {/* To replace with an image later, simply replace the span above with:
-                  <img src="/your-logo.png" alt="Logo" className="w-auto h-auto max-w-[80%] max-h-[80%] object-contain" />
-              */}
+                  <img src="/logo.png" alt="Logo" className="w-auto h-auto max-w-[80%] max-h-[80%] object-contain" />
+              
             </div>
           </div>
         </div>

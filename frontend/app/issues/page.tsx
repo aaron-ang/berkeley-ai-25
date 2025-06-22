@@ -211,8 +211,8 @@ export default function IssuesPage() {
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden">
-              <div className="h-full overflow-y-auto">
+            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden flex flex-col">
+              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
                 {showSummary ? (
                   <div className="text-white space-y-4">
                     {analysis ? (

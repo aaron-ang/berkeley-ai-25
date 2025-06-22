@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, HttpUrl
 
 from agent import analyze_gh_issue
+from schema import create_mock_analysis
 
 app = FastAPI(title="Berkeley AI 25 - GitHub Issue Analysis API")
 
@@ -32,9 +33,12 @@ def analyze_github_issue(request: GitHubIssueRequest):
         GitHubIssueResponse: Structured analysis data following GitHubIssueAnalysis schema
     """
     try:
-        # Convert Pydantic URL to string
-        issue_url = str(request.github_url)
-        analysis_result = analyze_gh_issue(issue_url)
+        # For now, return mock data instead of calling the actual agent
+        # TODO: Replace with actual agent call when ready
+        # issue_url = str(request.github_url)
+        # analysis_result = analyze_gh_issue(issue_url)
+
+        analysis_result = create_mock_analysis()
         return analysis_result
 
     except ValueError as e:

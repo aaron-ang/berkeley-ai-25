@@ -248,7 +248,7 @@ export default function IssuesPage() {
                                 <ol className="mt-1 space-y-2 text-gray-300">
                                   {analysis.analysis.implementation_steps.map((step, index) => (
                                     <li key={index} className="text-sm leading-relaxed">
-                                      <span className="text-purple-300">{index + 1}.</span> {step}
+                                      {step}
                                     </li>
                                   ))}
                                 </ol>

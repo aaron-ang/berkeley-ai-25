@@ -31,7 +31,7 @@ export default function IssuesPage() {
   <div
     className="absolute inset-0 z-9"
     style={{
-      backgroundImage: 'url("/purpleBackground.png")',
+      backgroundImage: 'url("/purpleBackground2.png")',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -94,7 +94,7 @@ export default function IssuesPage() {
             <Link href="/" style={{ textDecoration: 'none' }}>
                 <div className="glass-logo-feature absolute flex items-center"
                     style={{
-                        top: '101px',
+                        top: '21px',
                         left: '1416px',
                     }}>
                 </div>
@@ -281,7 +281,7 @@ export default function IssuesPage() {
                     border-left: 2px solid gray;
                     }
                     .monaco-editor .margin {
-                    border-right: 1px solid #333; 
+                    border-right: 1px solid #333;
                     width: 60px !important;
                     }
                 `

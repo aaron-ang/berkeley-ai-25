@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Editor from "@monaco-editor/react";
 
 import "./issues.css";
-import { GitHubIssueAnalysis, FlattenedFile, analyzeGitHubIssue } from "../../lib/api";
+import { GitHubIssueAnalysis, FlattenedFile } from "../../lib/api";
 
 
 
@@ -16,42 +16,34 @@ export default function IssuesPage() {
   const [analysis, setAnalysis] = useState<GitHubIssueAnalysis | null>(null);
   const [flattenedFiles, setFlattenedFiles] = useState<FlattenedFile[]>([]);
   const [selectedFile, setSelectedFile] = useState<FlattenedFile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadAnalysis = async () => {
+    // Load analysis data from localStorage
+    const analysisDataStr = localStorage.getItem('analysisData');
+
+    if (analysisDataStr) {
       try {
-        // Check if there's a pending URL to analyze
-        const pendingUrl = localStorage.getItem('pendingGithubUrl');
-        if (pendingUrl) {
-          setLoading(true);
+        const analysisData = JSON.parse(analysisDataStr);
+        setAnalysis(analysisData.analysis);
+        setFlattenedFiles(analysisData.flattenedFiles);
 
-          const result = await analyzeGitHubIssue(pendingUrl);
-
-          setAnalysis(result.analysis);
-          setFlattenedFiles(result.flattenedFiles);
-          if (result.flattenedFiles.length > 0) {
-            setSelectedFile(result.flattenedFiles[0]);
-          }
-          setLoading(false);
-        } else {
-          // No pending URL, redirect to home
-          router.push('/');
+        if (analysisData.flattenedFiles.length > 0) {
+          setSelectedFile(analysisData.flattenedFiles[0]);
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-        setLoading(false);
+      } catch (error) {
+        console.error('Error parsing analysis data:', error);
+        router.push('/');
       }
-    };
-    loadAnalysis();
+    } else {
+      // No data available, redirect to home
+      router.push('/');
+    }
   }, [router]);
 
-  // Show loading state
-  if (loading) {
+  // Show loading if no analysis data yet
+  if (!analysis) {
     return (
       <div className="min-h-screen relative flex items-center justify-center">
-        {/* Background layers */}
         <div className="absolute inset-0 bg-black z-0" />
         <div
           className="absolute inset-0 z-9"
@@ -63,44 +55,9 @@ export default function IssuesPage() {
             opacity: 0.9,
           }}
         />
-
-        {/* Loading spinner */}
         <div className="relative z-10 text-center">
           <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white text-xl">Analyzing GitHub issue...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <div className="min-h-screen relative flex items-center justify-center">
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-black z-0" />
-        <div
-          className="absolute inset-0 z-9"
-          style={{
-            backgroundImage: 'url("/purpleBackground2.png")',
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            opacity: 0.9,
-          }}
-        />
-
-        {/* Error message */}
-        <div className="relative z-10 text-center max-w-md mx-auto">
-          <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-6 text-red-200">
-            <strong>Error:</strong> {error}
-          </div>
-          <button
-            onClick={() => router.push('/')}
-            className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full transition-colors"
-          >
-            Go Back
-          </button>
+          <p className="text-white text-xl">Loading analysis...</p>
         </div>
       </div>
     );
@@ -147,36 +104,10 @@ export default function IssuesPage() {
             </h1>
           </div>
 
-          {/* Search */}
-          <div className="flex justify-end">
-            <div className="glass-search-issues w-80 h-12 flex items-center">
-              <div className="absolute left-6 flex items-center pointer-events-none z-10">
-                <svg
-                  className="w-6 h-6 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder="Paste your issue link here"
-                className="w-full h-full pl-16 pr-6 text-white placeholder-gray-300 bg-transparent border-none outline-none"
-                style={{ fontSize: "16px" }}
-              />
-            </div>
-          </div>
         </header>
 
         {/* Main Content */}
-        <main className="grid grid-cols-[500px_1fr] gap-6 h-full overflow-hidden">
+        <main className="grid grid-cols-[500px_1fr] gap-6 h-full">
           {/* Left Sidebar */}
           <div className="flex flex-col gap-4">
             {/* Toggle Buttons */}
@@ -211,8 +142,8 @@ export default function IssuesPage() {
             </div>
 
             {/* Sidebar Content */}
-            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden flex flex-col">
-              <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
+            <div className="flex-1 glass-panel rounded-2xl p-8 overflow-hidden">
+              <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent pr-2">
                 {showSummary ? (
                   <div className="text-white space-y-6">
                     {analysis ? (

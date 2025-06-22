@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { analyzeGitHubIssue } from "../lib/api";
 
 export default function Home() {
   const router = useRouter();
   const [githubUrl, setGithubUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,13 +19,48 @@ export default function Home() {
     }
 
     setError(null);
+    setLoading(true);
 
-    // Store the URL
-    localStorage.setItem('pendingGithubUrl', githubUrl);
-    // Small delay to ensure localStorage is set
-    await new Promise(resolve => setTimeout(resolve, 50));
-    router.push('/issues');
+    try {
+      const result = await analyzeGitHubIssue(githubUrl);
+
+      // Store the analysis data in localStorage for the issues page
+      localStorage.setItem('analysisData', JSON.stringify({
+        analysis: result.analysis,
+        flattenedFiles: result.flattenedFiles
+      }));
+
+      // Navigate to issues page
+      router.push('/issues');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setLoading(false);
+    }
   };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen relative flex items-center justify-center">
+        <div className="absolute inset-0 bg-black z-0" />
+        <div
+          className="absolute inset-0 z-9"
+          style={{
+            backgroundImage: 'url("/purpleBackground2.png")',
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            opacity: 0.9,
+          }}
+        />
+        <div className="relative z-10 text-center">
+          <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-white text-xl">Analyzing GitHub issue...</p>
+          <p className="text-white/60 text-sm mt-2">This may take a few moments</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -63,6 +100,12 @@ export default function Home() {
         {error && (
           <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-200 relative z-10">
             <strong>Error:</strong> {error}
+            <button
+              onClick={() => setError(null)}
+              className="ml-4 px-3 py-1 bg-red-600/30 hover:bg-red-600/50 rounded text-sm transition-colors"
+            >
+              Dismiss
+            </button>
           </div>
         )}
 
@@ -91,16 +134,38 @@ export default function Home() {
               placeholder="Paste your GitHub issue URL here"
               className="w-full h-full pl-16 pr-6 text-white placeholder-gray-300 bg-transparent border-none outline-none relative z-10"
               style={{ fontSize: '18px' }}
+              disabled={loading}
             />
           </div>
           <button
             type="submit"
+            disabled={loading}
             className="mt-4 px-8 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 text-white rounded-full transition-colors duration-200"
           >
-            Analyze Issue
+            {loading ? 'Analyzing...' : 'Analyze Issue'}
           </button>
         </form>
 
+        <style jsx global>{`
+          .glass-circle {
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+          }
+          
+          .glass-search {
+            width: 600px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            position: relative;
+          }
+        `}</style>
       </main>
     </div>
   );

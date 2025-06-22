@@ -8,8 +8,6 @@ import Editor from "@monaco-editor/react";
 import "./issues.css";
 import { GitHubIssueAnalysis, FlattenedFile } from "../../lib/api";
 
-
-
 export default function IssuesPage() {
   const router = useRouter();
   const [showSummary, setShowSummary] = useState(true);
@@ -19,7 +17,7 @@ export default function IssuesPage() {
 
   useEffect(() => {
     // Load analysis data from localStorage
-    const analysisDataStr = localStorage.getItem('analysisData');
+    const analysisDataStr = localStorage.getItem("analysisData");
 
     if (analysisDataStr) {
       try {
@@ -31,12 +29,12 @@ export default function IssuesPage() {
           setSelectedFile(analysisData.flattenedFiles[0]);
         }
       } catch (error) {
-        console.error('Error parsing analysis data:', error);
-        router.push('/');
+        console.error("Error parsing analysis data:", error);
+        router.push("/");
       }
     } else {
       // No data available, redirect to home
-      router.push('/');
+      router.push("/");
     }
   }, [router]);
 
@@ -79,31 +77,29 @@ export default function IssuesPage() {
       />
 
       {/* Main Content Grid */}
-        <div className="relative z-10 max-h-screen flex flex-col p-4 min-h-screen">
-        {/* Header */}
-        <header className="grid grid-cols-3 items-center gap-4">
-          {/* Logo */}
-          <div className="flex justify-start">
-            <Link href="/" className="glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center">
-              <img src="/logo.png" alt="Logo" />
-            </Link>
-          </div>
+      <div className="relative z-10 max-h-screen flex flex-col p-4 min-h-screen">
+        <header className="w-full px-4 py-4 flex items-center justify-center z-10 mb-3">
+          {/* Title (centered, truncated with ellipsis) */}
+          <h1
+            className="text-white text-4xl md:text-5xl lg:text-4xl text-center truncate max-w-full px-16"
+            style={{
+              fontFamily: "Montserrat, sans-serif",
+              fontWeight: 400,
+              lineHeight: "100%",
+              letterSpacing: "0%",
+            }}
+            title={analysis?.issue_summary.title || "Loading..."}
+          >
+            {analysis?.issue_summary.title || "Loading..."}
+          </h1>
 
-          {/* Title */}
-          <div className="text-center">
-            <h1
-              className="text-white text-4xl md:text-5xl lg:text-4xl"
-              style={{
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: 400,
-                lineHeight: "100%",
-                letterSpacing: "0%",
-              }}
-            >
-              {analysis?.issue_summary.title || "Loading..."}
-            </h1>
-          </div>
-
+          {/* Home Button (top-right) */}
+          <Link
+            href="/"
+            className="absolute right-4 top-1 glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center mb-2"
+          >
+            <img src="/logo.png" alt="Logo" />
+          </Link>
         </header>
 
         {/* Main Content */}
@@ -113,11 +109,17 @@ export default function IssuesPage() {
             {/* Toggle Buttons */}
             <div className="flex gap-4">
               <button
-                className={`glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center cursor-pointer ${showSummary ? 'opacity-100' : 'opacity-60'
-                  }`}
+                className={`glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center cursor-pointer ${
+                  showSummary ? "opacity-100" : "opacity-60"
+                }`}
                 onClick={() => setShowSummary(true)}
               >
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="42" height="42">
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="42"
+                  height="42"
+                >
                   <path
                     d="M0 0 C3.41865168 1.81864319 5.56456983 4.03408009 8 7 C8.68231689 7.58096436 9.36463379 8.16192871 10.06762695 8.76049805 C12.51482853 11.59665472 12.50290747 13.04990671 12.49609375 16.75390625 C12.49673828 17.85541016 12.49738281 18.95691406 12.49804688 20.09179688 C12.47806641 21.23712891 12.45808594 22.38246094 12.4375 23.5625 C12.44458984 24.71169922 12.45167969 25.86089844 12.45898438 27.04492188 C12.39560074 35.36768042 12.39560074 35.36768042 10.85595703 37.82861328 C8.16173552 39.52907037 6.03932164 39.3718459 2.87109375 39.36328125 C1.67162109 39.36263672 0.47214844 39.36199219 -0.76367188 39.36132812 C-2.01728516 39.34521484 -3.27089844 39.32910156 -4.5625 39.3125 C-6.4487207 39.31733398 -6.4487207 39.31733398 -8.37304688 39.32226562 C-17.73311942 39.26688058 -17.73311942 39.26688058 -20 37 C-20.22406625 34.45449442 -20.32810413 32.02075208 -20.3359375 29.47265625 C-20.3425943 28.72793564 -20.3492511 27.98321503 -20.35610962 27.21592712 C-20.36624041 25.63982618 -20.37092651 24.0636823 -20.37060547 22.48754883 C-20.37497741 20.0749651 -20.41128472 17.66421276 -20.44921875 15.25195312 C-20.45508712 13.72136043 -20.45905638 12.19075904 -20.4609375 10.66015625 C-20.47530853 9.93820572 -20.48967957 9.21625519 -20.50448608 8.47242737 C-20.47503432 5.24630225 -20.43680861 3.47116899 -18.19677734 1.05493164 C-12.74524951 -1.5629892 -5.83781748 -0.82239095 0 0 Z M-15 5 C-15 14.57 -15 24.14 -15 34 C-7.74 34 -0.48 34 7 34 C7 27.73 7 21.46 7 15 C3.7 15 0.4 15 -3 15 C-3 11.7 -3 8.4 -3 5 C-6.96 5 -10.92 5 -15 5 Z"
                     fill="#FFFFFF"
@@ -127,11 +129,17 @@ export default function IssuesPage() {
               </button>
 
               <button
-                className={`glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center cursor-pointer ${!showSummary ? 'opacity-100' : 'opacity-60'
-                  }`}
+                className={`glass-logo-feature w-16 h-16 rounded-full flex items-center justify-center cursor-pointer ${
+                  !showSummary ? "opacity-100" : "opacity-60"
+                }`}
                 onClick={() => setShowSummary(false)}
               >
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="42" height="42">
+                <svg
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="42"
+                  height="42"
+                >
                   <path
                     d="M0 0 C1.71703125 -0.01546875 1.71703125 -0.01546875 3.46875 -0.03125 C4.4690625 0.1440625 5.469375 0.319375 6.5 0.5 C7.180625 1.48806641 7.180625 1.48806641 7.875 2.49609375 C9.48699537 4.95485081 9.48699537 4.95485081 13.40625 5.00390625 C14.93714124 5.04237752 16.46862598 5.06122172 18 5.0625 C25.92574949 5.10881072 25.92574949 5.10881072 28.21704102 6.66967773 C31.00116608 10.64162552 29.96619724 16.33017571 29.9375 21 C29.9674707 22.73056641 29.9674707 22.73056641 29.99804688 24.49609375 C29.99740234 25.60082031 29.99675781 26.70554687 29.99609375 27.84375 C29.99887329 29.36258789 29.99887329 29.36258789 30.00170898 30.91210938 C29.5 33.5 29.5 33.5 27.89477539 35.33081055 C24.70040878 36.8903805 22.23819991 36.87202565 18.6875 36.86328125 C18.03676514 36.86377975 17.38603027 36.86427826 16.71557617 36.86479187 C15.34388159 36.86245815 13.97218218 36.85277093 12.60058594 36.83618164 C10.50676995 36.81257632 8.41422792 36.81562686 6.3203125 36.82226562 C-5.13476577 36.77444455 -5.13476577 36.77444455 -8.5 34.5 C-10.77901824 29.94196352 -9.7301617 23.62921094 -9.75 18.625 C-9.770625 17.33207031 -9.79125 16.03914063 -9.8125 14.70703125 C-9.81765625 13.46566406 -9.8228125 12.22429688 -9.828125 10.9453125 C-9.8374707 9.80594238 -9.84681641 8.66657227 -9.85644531 7.49267578 C-9.08222595 0.99241486 -6.14134255 -0.05532741 0 0 Z"
                     fill="#F2F2F2"
@@ -150,26 +158,50 @@ export default function IssuesPage() {
                       <>
                         {/* Issue Summary */}
                         <div>
-                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Issue Summary</h3>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">
+                            Issue Summary
+                          </h3>
                           <div className="space-y-3">
                             <div>
                               <strong>Description:</strong>
-                              <p className="mt-1 text-gray-300">{analysis.issue_summary.description}</p>
+                              <p className="mt-1 text-gray-300">
+                                {analysis.issue_summary.description}
+                              </p>
                             </div>
                             <div className="flex flex-wrap gap-4">
-                              <div><strong>Status:</strong> <span className="text-green-400">{analysis.issue_summary.status}</span></div>
-                              <div><strong>Type:</strong> <span className="text-blue-400">{analysis.analysis.problem_type}</span></div>
-                              <div><strong>Complexity:</strong> <span className="text-yellow-400">{analysis.analysis.complexity}</span></div>
+                              <div>
+                                <strong>Status:</strong>{" "}
+                                <span className="text-green-400">
+                                  {analysis.issue_summary.status}
+                                </span>
+                              </div>
+                              <div>
+                                <strong>Type:</strong>{" "}
+                                <span className="text-blue-400">
+                                  {analysis.analysis.problem_type}
+                                </span>
+                              </div>
+                              <div>
+                                <strong>Complexity:</strong>{" "}
+                                <span className="text-yellow-400">
+                                  {analysis.analysis.complexity}
+                                </span>
+                              </div>
                             </div>
                             {analysis.issue_summary.labels.length > 0 && (
                               <div>
                                 <strong>Labels:</strong>
                                 <div className="flex flex-wrap gap-1 mt-1">
-                                  {analysis.issue_summary.labels.map((label, index) => (
-                                    <span key={index} className="px-2 py-1 bg-purple-600/30 rounded text-xs">
-                                      {label}
-                                    </span>
-                                  ))}
+                                  {analysis.issue_summary.labels.map(
+                                    (label, index) => (
+                                      <span
+                                        key={index}
+                                        className="px-2 py-1 bg-purple-600/30 rounded text-xs"
+                                      >
+                                        {label}
+                                      </span>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -178,23 +210,39 @@ export default function IssuesPage() {
 
                         {/* Project Context */}
                         <div>
-                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Project Context</h3>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">
+                            Project Context
+                          </h3>
                           <div className="space-y-3">
                             <div>
                               <strong>Overview:</strong>
-                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">{analysis.project_context.overview}</p>
+                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">
+                                {analysis.project_context.overview}
+                              </p>
                             </div>
                             <div>
                               <strong>Architecture:</strong>
-                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">{analysis.project_context.architecture_overview}</p>
+                              <p className="mt-1 text-gray-300 text-sm leading-relaxed">
+                                {analysis.project_context.architecture_overview}
+                              </p>
                             </div>
-                            {Object.keys(analysis.project_context.main_directories).length > 0 && (
+                            {Object.keys(
+                              analysis.project_context.main_directories
+                            ).length > 0 && (
                               <div>
                                 <strong>Key Directories:</strong>
                                 <div className="mt-1 space-y-1">
-                                  {Object.entries(analysis.project_context.main_directories).map(([dir, desc], index) => (
+                                  {Object.entries(
+                                    analysis.project_context.main_directories
+                                  ).map(([dir, desc], index) => (
                                     <div key={index} className="text-sm">
-                                      <code className="text-purple-300">{dir}</code> - <span className="text-gray-300">{desc}</span>
+                                      <code className="text-purple-300">
+                                        {dir}
+                                      </code>{" "}
+                                      -{" "}
+                                      <span className="text-gray-300">
+                                        {desc}
+                                      </span>
                                     </div>
                                   ))}
                                 </div>
@@ -205,25 +253,43 @@ export default function IssuesPage() {
 
                         {/* Build & Development */}
                         <div>
-                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Build & Development</h3>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">
+                            Build & Development
+                          </h3>
                           <div className="space-y-3">
-                            {analysis.build_and_test.setup_commands.length > 0 && (
+                            {analysis.build_and_test.setup_commands.length >
+                              0 && (
                               <div>
                                 <strong>Setup Commands:</strong>
                                 <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs max-h-32 overflow-y-auto">
-                                  {analysis.build_and_test.setup_commands.map((cmd, index) => (
-                                    <div key={index} className="text-green-300 py-0.5">{cmd}</div>
-                                  ))}
+                                  {analysis.build_and_test.setup_commands.map(
+                                    (cmd, index) => (
+                                      <div
+                                        key={index}
+                                        className="text-green-300 py-0.5"
+                                      >
+                                        {cmd}
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             )}
-                            {analysis.build_and_test.test_commands.length > 0 && (
+                            {analysis.build_and_test.test_commands.length >
+                              0 && (
                               <div>
                                 <strong>Test Commands:</strong>
                                 <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs max-h-32 overflow-y-auto">
-                                  {analysis.build_and_test.test_commands.map((cmd, index) => (
-                                    <div key={index} className="text-blue-300 py-0.5">{cmd}</div>
-                                  ))}
+                                  {analysis.build_and_test.test_commands.map(
+                                    (cmd, index) => (
+                                      <div
+                                        key={index}
+                                        className="text-blue-300 py-0.5"
+                                      >
+                                        {cmd}
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -231,7 +297,9 @@ export default function IssuesPage() {
                               <div>
                                 <strong>Dev Server:</strong>
                                 <div className="mt-1 bg-black/30 rounded p-2 font-mono text-xs">
-                                  <div className="text-yellow-300">{analysis.build_and_test.development_server}</div>
+                                  <div className="text-yellow-300">
+                                    {analysis.build_and_test.development_server}
+                                  </div>
                                 </div>
                               </div>
                             )}
@@ -240,29 +308,43 @@ export default function IssuesPage() {
 
                         {/* Analysis & Implementation */}
                         <div>
-                          <h3 className="text-lg font-semibold mb-3 text-purple-300">Implementation Guide</h3>
+                          <h3 className="text-lg font-semibold mb-3 text-purple-300">
+                            Implementation Guide
+                          </h3>
                           <div className="space-y-3">
-                            {analysis.analysis.implementation_steps.length > 0 && (
+                            {analysis.analysis.implementation_steps.length >
+                              0 && (
                               <div>
                                 <strong>Implementation Steps:</strong>
                                 <ol className="mt-1 space-y-2 text-gray-300">
-                                  {analysis.analysis.implementation_steps.map((step, index) => (
-                                    <li key={index} className="text-sm leading-relaxed">
-                                      {step}
-                                    </li>
-                                  ))}
+                                  {analysis.analysis.implementation_steps.map(
+                                    (step, index) => (
+                                      <li
+                                        key={index}
+                                        className="text-sm leading-relaxed"
+                                      >
+                                        {step}
+                                      </li>
+                                    )
+                                  )}
                                 </ol>
                               </div>
                             )}
-                            {analysis.analysis.affected_components.length > 0 && (
+                            {analysis.analysis.affected_components.length >
+                              0 && (
                               <div>
                                 <strong>Affected Components:</strong>
                                 <div className="flex flex-wrap gap-1 mt-1">
-                                  {analysis.analysis.affected_components.map((component, index) => (
-                                    <span key={index} className="px-2 py-1 bg-orange-600/30 rounded text-xs">
-                                      {component}
-                                    </span>
-                                  ))}
+                                  {analysis.analysis.affected_components.map(
+                                    (component, index) => (
+                                      <span
+                                        key={index}
+                                        className="px-2 py-1 bg-orange-600/30 rounded text-xs"
+                                      >
+                                        {component}
+                                      </span>
+                                    )
+                                  )}
                                 </div>
                               </div>
                             )}
@@ -270,27 +352,44 @@ export default function IssuesPage() {
                               <div>
                                 <strong>Tests Needed:</strong>
                                 <ul className="mt-1 space-y-1 text-gray-300">
-                                  {analysis.analysis.tests_needed.map((test, index) => (
-                                    <li key={index} className="text-sm leading-relaxed">• {test}</li>
-                                  ))}
+                                  {analysis.analysis.tests_needed.map(
+                                    (test, index) => (
+                                      <li
+                                        key={index}
+                                        className="text-sm leading-relaxed"
+                                      >
+                                        • {test}
+                                      </li>
+                                    )
+                                  )}
                                 </ul>
                               </div>
                             )}
-                            {analysis.analysis.potential_risks && analysis.analysis.potential_risks.length > 0 && (
-                              <div>
-                                <strong>Potential Risks:</strong>
-                                <ul className="mt-1 space-y-1 text-red-300">
-                                  {analysis.analysis.potential_risks.map((risk, index) => (
-                                    <li key={index} className="text-sm leading-relaxed">⚠️ {risk}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                            )}
+                            {analysis.analysis.potential_risks &&
+                              analysis.analysis.potential_risks.length > 0 && (
+                                <div>
+                                  <strong>Potential Risks:</strong>
+                                  <ul className="mt-1 space-y-1 text-red-300">
+                                    {analysis.analysis.potential_risks.map(
+                                      (risk, index) => (
+                                        <li
+                                          key={index}
+                                          className="text-sm leading-relaxed"
+                                        >
+                                          ⚠️ {risk}
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
                           </div>
                         </div>
                       </>
                     ) : (
-                      <div className="text-center text-gray-300">Loading analysis...</div>
+                      <div className="text-center text-gray-300">
+                        Loading analysis...
+                      </div>
                     )}
                   </div>
                 ) : (
@@ -304,10 +403,11 @@ export default function IssuesPage() {
                           {flattenedFiles.map((file, index) => (
                             <div
                               key={index}
-                              className={`p-3 rounded-lg cursor-pointer border-l-4 border-purple-500 transition-colors ${selectedFile === file
-                                ? "bg-white/10"
-                                : "bg-transparent hover:bg-white/5"
-                                }`}
+                              className={`p-3 rounded-lg cursor-pointer border-l-4 border-purple-500 transition-colors ${
+                                selectedFile === file
+                                  ? "bg-white/10"
+                                  : "bg-transparent hover:bg-white/5"
+                              }`}
                               onClick={() => setSelectedFile(file)}
                             >
                               <div className="font-mono text-sm mb-2 break-all">
@@ -316,17 +416,20 @@ export default function IssuesPage() {
                               <div className="text-xs opacity-80 leading-relaxed">
                                 {file.reason}
                               </div>
-                              {file.keySections && file.keySections.length > 0 && (
-                                <div className="text-xs opacity-60 mt-2">
-                                  {file.keySections.length} key section(s)
-                                </div>
-                              )}
+                              {file.keySections &&
+                                file.keySections.length > 0 && (
+                                  <div className="text-xs opacity-60 mt-2">
+                                    {file.keySections.length} key section(s)
+                                  </div>
+                                )}
                             </div>
                           ))}
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center text-gray-300">Loading files...</div>
+                      <div className="text-center text-gray-300">
+                        Loading files...
+                      </div>
                     )}
                   </div>
                 )}
@@ -341,20 +444,23 @@ export default function IssuesPage() {
               <h2 className="text-white text-2xl font-mono break-all truncate md:break-words text-left overflow-hidden">
                 {selectedFile?.pathName || "Select a file"}
               </h2>
-
             </div>
 
             {/* Code Editor */}
             <div className="flex-1 rounded-2xl overflow-hidden bg-[#18181B] min-h-0">
               <Editor
-                language={getMonacoLanguageFromPath(selectedFile?.pathName || "")}
+                language={getMonacoLanguageFromPath(
+                  selectedFile?.pathName || ""
+                )}
                 value={
-                  selectedFile?.keySections && selectedFile.keySections.length > 0
+                  selectedFile?.keySections &&
+                  selectedFile.keySections.length > 0
                     ? selectedFile.keySections
-                      .map((section) =>
-                        `// Lines ${section.line_start}-${section.line_end}: ${section.explanation}\n${section.code}`
-                      )
-                      .join("\n\n")
+                        .map(
+                          (section) =>
+                            `// Lines ${section.line_start}-${section.line_end}: ${section.explanation}\n${section.code}`
+                        )
+                        .join("\n\n")
                     : `// Code content not available for this file`
                 }
                 theme="vs-dark"
@@ -376,13 +482,13 @@ export default function IssuesPage() {
           backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .glass-logo-feature {
           background: rgba(255, 255, 255, 0.1);
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .glass-search-issues {
           background: rgba(255, 255, 255, 0.1);
           backdrop-filter: blur(10px);

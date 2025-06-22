@@ -2,9 +2,26 @@
 import React from "react";
 import './issues.css';
 import Link from "next/link";
-import Editor from '@monaco-editor/react';
+import Editor, { OnMount } from '@monaco-editor/react';
+import { useRef } from 'react';
 
 export default function IssuesPage() {
+    const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+
+    const handleEditorMount: OnMount = (editor, monaco) => {
+        editorRef.current = editor;
+
+        // Highlight lines on ide
+        editor.deltaDecorations([], [
+            {
+                range: new monaco.Range(1, 1, 3, 1), // line 1 to 3
+                options: {
+                    isWholeLine: true,
+                    className: 'highlight-line',
+                },
+            },
+        ]);
+    };
     return (
         <div
             className="min-h-screen relative"
@@ -90,27 +107,21 @@ export default function IssuesPage() {
                 style={{
                     width: '498px',
                     height: '781px',
-                    top: '259px',
-                    left: '35px',
+                    top: '218px',
+                    left: '33px',
                     fontFamily: 'Montserrat, sans-serif',
                     fontWeight: 400,
                     fontSize: '24px',
                     lineHeight: '28px',
                     letterSpacing: '0%',
-                    background: '#FFFFFF',
+                    background: 'transparent',
                     backdropFilter: 'blur(20px)',
-                    boxShadow: `
-            3px 3px 0px 0px #00000080 inset,
-            -2px -2px 1px 0px #B3B3B3 inset,
-            2px 2px 1px 0px #B3B3B3 inset,
-            0px 0px 0px 0px #999999 inset,
-            0px 0px 22px 0px #F2F2F280 inset
-        `,
+                    boxShadow: 'none',
                     borderRadius: '16px',
                     padding: '32px'
                 }}
             >
-                <span style={{ color: '#222' }}>
+                <span style={{ color: '#fff' }}>
                     {/* Your text goes here */}
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque euismod, urna eu tincidunt consectetur, nisi nisl aliquam nunc, eget aliquam massa nisl quis neque.
                 </span>
@@ -196,10 +207,10 @@ export default function IssuesPage() {
             <div
                 className="absolute"
                 style={{
-                    top: '208px',
-                    left: '594px',
-                    width: '800px',
-                    height: '700px',
+                    top: '199px',
+                    left: '565px',
+                    width: '850px',
+                    height: '806px',
                     borderRadius: '16px',
                     overflow: 'hidden',
                     boxShadow: '0 4px 32px 0 rgba(0,0,0,0.10)',
@@ -209,20 +220,28 @@ export default function IssuesPage() {
                 }}
             >
                 <Editor
-                    height="100%"
-                    defaultLanguage="typescript"
-                    defaultValue="if (true) "
+                    height="90vh"
+                    defaultLanguage="typescript" //change based on what the file type is 
+                    defaultValue={`function greet(name: string) {\n  const msg = "Hello " + name;\n  return msg;\n}\n\ngreet("world");`}
                     theme="vs-dark"
+                    onMount={handleEditorMount}
                     options={{
+                        lineNumbers: 'on',
                         minimap: { enabled: false },
-                        fontSize: 16,
-                        fontFamily: 'Fira Mono, monospace',
-                        padding: { top: 16 },
-                        scrollbar: { vertical: 'auto' },
                     }}
                 />
+                <style jsx global>{`
+                    .monaco-editor .highlight-line {
+                    background-color: rgba(205, 205, 205, 0.1); 
+                    border-left: 2px solid gray;
+                    }
+                    .monaco-editor .margin {
+                    border-right: 1px solid #333; 
+                    width: 60px !important;
+                    }
+                `
+                }</style>
             </div>
-
         </div>
     );
 }

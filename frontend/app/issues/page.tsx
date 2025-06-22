@@ -94,8 +94,13 @@ export default function IssuesPage() {
             <Link href="/" style={{ textDecoration: 'none' }}>
                 <div className="glass-logo-feature absolute flex items-center"
                     style={{
-                        top: '21px',
-                        left: '1416px',
+                        top: '28px',
+                        left: '1400px',
+                        backgroundImage: 'url("/logo.png")',
+                        backgroundSize: 'contain',
+                        backgroundRepeat: 'no-repeat',
+                        width: '62px',
+                        height: '62px',
                     }}>
                 </div>
             </Link>

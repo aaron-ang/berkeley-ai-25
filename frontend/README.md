@@ -1,7 +1,7 @@
 ## Setup
 
 ```sh
-npm i
+npm install
 ```
 
 ## Run

@@ -89,7 +89,7 @@ Our project helps users understand and guide them along the process of fixing Gi
 
 ## Meet the Team 👋
 
-- [Kai Navratil](https://devpost.com/kaijnav)
-- [Elizabeth Chen](https://devpost.com/eyc54)
-- [Bode Chiu](https://devpost.com/AsianMcAsian)
-- [Aaron Ang](https://devpost.com/aaron-ayd)
+- [Kai Navratil](https://www.linkedin.com/in/kairi-navratil/)
+- [Elizabeth Chen](https://www.linkedin.com/in/elizabeth-c-059762238/)
+- [Bode Chiu](https://www.linkedin.com/in/bodechiu/)
+- [Aaron Ang](https://www.linkedin.com/in/aaron-ayd/)
